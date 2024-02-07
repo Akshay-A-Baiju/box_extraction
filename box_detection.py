@@ -27,4 +27,14 @@ def box_extraction(original_img_path, cropped_dir_path):
     vertical_lines_img = cv2.dilate(img_temp1, vertical_kernel, iterations=3)
     cv2.imwrite("img/output/vertical_lines.jpg",vertical_lines_img)
 
+    # Horizontal kernel
+    hori_kernel_length=np.array(img).shape[0]//55
+    print("horizontal kernel length : ",hori_kernel_length)
+    # A horizontal kernel of (kernel_length X 1), which will help to detect all the horizontal line from the image.
+    hori_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (hori_kernel_length, 1))
+    # Morphological operation to detect horizontal lines from an image
+    img_temp2 = cv2.erode(img_bin, hori_kernel, iterations=3)
+    horizontal_lines_img = cv2.dilate(img_temp2, hori_kernel, iterations=3)
+    cv2.imwrite("img/output/horizontal_lines.jpg",horizontal_lines_img)
+
 box_extraction(image_path,"./img/output/")
