@@ -37,4 +37,18 @@ def box_extraction(original_img_path, cropped_dir_path):
     horizontal_lines_img = cv2.dilate(img_temp2, hori_kernel, iterations=3)
     cv2.imwrite("img/output/horizontal_lines.jpg",horizontal_lines_img)
 
+    # Weighting parameters for combination
+    alpha = 0.5                 # percentage of vertical lines
+    beta = 1.0 - alpha          # percentage of horizontal lines
+    # This function helps to add two image with specific weight parameter to get a third image as summation of two image.
+    img_final_bin = cv2.addWeighted(vertical_lines_img, alpha, horizontal_lines_img, beta, 0.0)
+    # A kernel of (3 X 3) ones.
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+    img_final_bin = cv2.erode(~img_final_bin, kernel, iterations=1)
+    (thresh, img_final_bin) = cv2.threshold(img_final_bin, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+    # img_final_bin = 255-img_final_bin
+    # See vertical and horizontal lines in the image which is used to find boxes
+    print("Image which only contains boxes: img/output/img_final_bin.jpg")
+    cv2.imwrite("img/output/img_final_bin.jpg",img_final_bin)
+
 box_extraction(image_path,"./img/output/")
