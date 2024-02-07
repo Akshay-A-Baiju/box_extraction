@@ -81,4 +81,17 @@ def box_extraction(original_img_path, cropped_dir_path):
     # cv2.drawContours(img, contours, -1, (0, 0, 255), 3)
     # cv2.imwrite("./temp/img_contour.jpg", img)
 
-box_extraction(image_path,"./img/output/")
+    print("Output stored in img/output directiory!")
+
+    idx = 0
+    for c in contours:
+        # Returns the location and width,height for every contour
+        x, y, w, h = cv2.boundingRect(c)
+
+        # If the box height > 20, width >80, then only save it as a box in "img/output/cropped/" folder.
+        if (w > 80 and h > 20) and w > 2.5*h:
+            idx += 1
+            new_img = img[y:y+h, x:x+w]
+            cv2.imwrite(cropped_dir_path+str(idx) + '.png', new_img)
+
+box_extraction(image_path,"./img/output/cropped/")
